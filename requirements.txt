@@ -30,6 +30,6 @@ python-multipart==0.0.6
 starlette==0.27.0
 
 # Notes:
-# 1) pip must be <24 for numpy 1.20 sdist fallback (distutils). Dockerfile pins pip==20.2.4 first.
-# 2) scipy/matplotlib/astropy conda-channel builds need gfortran + libopenblas + liblapack + libcfitsio + libhdf5 (see Dockerfile apt).
+# 1) pip must be <24 for numpy 1.20 sdist fallback (distutils). Dockerfile pins pip==23.3.2.
+# 2) Wheels bundle OpenBLAS/HDF5; apt only needs curl/ca-certificates (bullseye EOL -> archive.debian.org).
 # 3) tkinter NOT needed (backend uses matplotlib Agg only).
