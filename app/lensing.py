@@ -96,7 +96,10 @@ def compute_critical_caustics_from_grid(tracer, grid):
 def create_beam_kernel(bmaj, bmin, pa_deg, pixel_scale):
     """
     Radio CASA/AIPS: Bmaj/Bmin=FWHM("), PA=N->E, 0=N-S, 90=E-W, East=-x (left).
-    theta_math = 90 + PA. Same as lensing_gui/app.py (sign corrected).
+    World orientation theta_math = 90 + PA (same as the ellipse patch). The kernel
+    array itself is built with -theta_math because array rows point DOWN while the
+    displayed world y points UP (origin="upper"); without the negation the convolved
+    image comes out mirrored (PA sign flipped).
     """
     if bmaj <= 0 or bmin <= 0:
         raise ValueError("Bmaj/Bmin must be >0")
@@ -108,7 +111,9 @@ def create_beam_kernel(bmaj, bmin, pa_deg, pixel_scale):
     if size % 2 == 0:
         size += 1
     y, x = np.mgrid[-radius:radius + 1, -radius:radius + 1]
-    theta = np.deg2rad(90.0 + pa_deg)
+    # y here is the array row offset (points DOWN); negate so the kernel lands on
+    # the same world orientation as the ellipse patch drawn with angle=90+PA.
+    theta = np.deg2rad(-90.0 - pa_deg)
     cos_t = np.cos(theta)
     sin_t = np.sin(theta)
     x_rot = x * cos_t + y * sin_t
