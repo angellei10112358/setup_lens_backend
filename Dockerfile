@@ -15,16 +15,18 @@ RUN sed -i 's/deb.debian.org/archive.debian.org/g; s/security.debian.org/archive
     echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid; \
     apt-get update -o Acquire::Check-Valid-Until=false || true
 RUN apt-get install -y --no-install-recommends curl ca-certificates 2>&1 || true; \
-    apt-get install -y --no-install-recommends build-essential gfortran pkg-config libffi-dev 2>&1 || true; \
+    apt-get install -y --no-install-recommends build-essential gfortran pkg-config libffi-dev python3-dev 2>&1 || true; \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Layer cache: requirements first
+# Layer cache: requirements first.
+# Render builds in US/EU: PyPI primary, tuna mirror fallback. Retries/timeout for
+# flaky network; prefer-binary avoids source builds of old scientific packages.
 COPY requirements.txt ./requirements.txt
-RUN pip install --upgrade "pip==23.3.2" && \
-    pip install --prefer-binary -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn || \
-    pip install --prefer-binary -r requirements.txt
+RUN python --version && pip install --upgrade "pip==23.3.2" && pip --version && \
+    pip install --retries 10 --timeout 120 --prefer-binary --progress-bar off -r requirements.txt || \
+    pip install --retries 10 --timeout 120 --prefer-binary --progress-bar off -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 
 COPY app/ ./app/
 
