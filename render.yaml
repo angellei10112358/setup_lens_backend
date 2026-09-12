@@ -1,0 +1,14 @@
+# Render deploy (https://render.com) — Docker runtime
+services:
+  - type: web
+    name: setup-lens-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard  # needs RAM for autolens; starter may OOM on first compute
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGIN
+        value: https://YOUR_GITHUB_USERNAME.github.io

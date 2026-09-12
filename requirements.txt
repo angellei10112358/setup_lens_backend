@@ -1,0 +1,35 @@
+# setup-lens-backend — pinned for python:3.8 + PyAutoLens 2021.10.14.1 (strong lock, do NOT float)
+# Base image: python:3.8-slim-bullseye (glibc, manylinux2014). Do NOT use alpine (musl breaks numba/llvmlite/scipy).
+# Mirror fallback: https://pypi.tuna.tsinghua.edu.cn/simple (same as lensing_gui/setup)
+
+# Core lensing (strong lock 2021.10.14.1)
+autolens==2021.10.14.1
+autoarray==2021.10.14.1
+autogalaxy==2021.10.14.1
+autofit==2021.10.14.1
+autoconf==2021.10.14.1
+
+# Scientific (compatible with autolens 2021.10.14.1, do NOT upgrade numpy)
+numpy==1.20.2
+scipy==1.5.2
+matplotlib==3.3.2
+astropy==4.0.2
+scikit-image==0.17.2
+scikit-learn==0.23.2
+numba==0.51.2
+llvmlite==0.34.0
+Pillow==8.0.1
+h5py==2.10.0
+SQLAlchemy==1.3.20
+
+# API server (py3.8 compatible, pydantic v1)
+fastapi==0.95.2
+uvicorn==0.22.0
+pydantic==1.10.12
+python-multipart==0.0.6
+starlette==0.27.0
+
+# Notes:
+# 1) pip must be <24 for numpy 1.20 sdist fallback (distutils). Dockerfile pins pip==20.2.4 first.
+# 2) scipy/matplotlib/astropy conda-channel builds need gfortran + libopenblas + liblapack + libcfitsio + libhdf5 (see Dockerfile apt).
+# 3) tkinter NOT needed (backend uses matplotlib Agg only).
