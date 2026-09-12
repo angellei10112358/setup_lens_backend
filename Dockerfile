@@ -5,7 +5,8 @@ FROM python:3.8-slim-bullseye
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
 
 # bullseye is EOL: official mirrors 404 (exit 100). Point to archive + ignore expiry.
 # Wheels already bundle OpenBLAS/HDF5, so only curl/ca-certificates are mandatory;
